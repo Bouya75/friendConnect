@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><link rel="stylesheet" href="/style.css">
+    <meta charset="UTF-8">
+    <title>Inscription - FriendConnect</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 350px; }
+        h2 { color: #1877f2; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        button:hover { background: #166fe5; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>FriendConnect</h2>
+        <form action="/inscription" method="post">
+            Nom: <input type="text" name="nom" required><br>
+            Prénom: <input type="text" name="prenom" required><br>
+            Email: <input type="email" name="email" required><br>
+            Mot de passe: <input type="password" name="motDePasse" required><br>
+            <button type="submit">S'inscrire</button>
+        </form>
+    </div>
+</body>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/membres" class="nav-logo">FriendConnect</a>
+        <div class="nav-links">
+            <a href="/membres">Membres</a>
+            <a href="/profil">
+                Mon Profil
+                <span th:if="${nbMessages > 0}" class="notif-badge">[[${nbMessages}]]</span>
+            </a>
+            <a href="/deconnexion" class="btn-logout">Déconnexion</a>
+        </div>
+    </div>
+</nav>
+
+</html>
+

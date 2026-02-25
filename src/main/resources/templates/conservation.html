@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Discussion - FriendConnect</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .chat-container { max-width: 600px; margin: auto; background: white; border-radius: 12px; shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 80vh; }
+
+        .chat-header { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; }
+        .ami-photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
+        .message-list { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
+
+        /* Bulles de messages */
+        .msg { max-width: 70%; padding: 10px 15px; border-radius: 18px; font-size: 14px; position: relative; }
+        .msg-moi { align-self: flex-end; background: #0084ff; color: white; border-bottom-right-radius: 4px; }
+        .msg-ami { align-self: flex-start; background: #e4e6eb; color: black; border-bottom-left-radius: 4px; }
+
+        .date { font-size: 10px; opacity: 0.7; display: block; margin-top: 5px; text-align: right; }
+
+        .chat-input { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; }
+        .chat-input input { flex-grow: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        .btn-send { background: #0084ff; color: white; border: none; padding: 8px 15px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+
+        .back-link { margin-bottom: 10px; display: inline-block; text-decoration: none; color: #0084ff; }
+    </style>
+</head>
+<body>
+
+<a href="/profil" class="back-link">← Retour au profil</a>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <img class="ami-photo"
+             th:src="${ami.photoUrl != null && ami.photoUrl != '' ? ami.photoUrl : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}">
+        <h3 th:text="${ami.prenom + ' ' + ami.nom}" style="margin:0;">Nom de l'ami</h3>
+    </div>
+
+    <div class="message-list">
+        <div th:each="m : ${messages}"
+             th:class="${m.expediteur.id == session.utilisateurConnecte.id} ? 'msg msg-moi' : 'msg msg-ami'">
+            <span th:text="${m.contenu}">Contenu du message</span>
+            <span class="date" th:text="${#temporals.format(m.dateEnvoi, 'HH:mm')}">12:30</span>
+        </div>
+
+        <p th:if="${#lists.isEmpty(messages)}" style="text-align: center; color: #888;">
+            Aucun message. Commencez la discussion !
+        </p>
+    </div>
+
+    <form action="/envoyer-message" method="post" class="chat-input">
+        <input type="hidden" name="destinataireId" th:value="${ami.id}">
+        <input type="text" name="texte" placeholder="Écrivez un message..." required autocomplete="off">
+        <button type="submit" class="btn-send">➤</button>
+    </form>
+</div>
+
+</body>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/membres" class="nav-logo">FriendConnect</a>
+        <div class="nav-links">
+            <a href="/membres">Membres</a>
+            <a href="/profil">
+                Mon Profil
+                <span th:if="${nbMessages > 0}" class="notif-badge">[[${nbMessages}]]</span>
+            </a>
+            <a href="/deconnexion" class="btn-logout">Déconnexion</a>
+        </div>
+    </div>
+</nav>
+</html>

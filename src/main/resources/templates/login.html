@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+</head>
+<link rel="stylesheet" href="/style.css">
+<body>
+<h2>Connexion</h2>
+<p th:if="${erreur}" th:text="${erreur}" style="color:red"></p>
+
+<form action="/login" method="post">
+    Email: <input type="email" name="email" required><br>
+    Mot de passe: <input type="password" name="motDePasse" required><br>
+    <button type="submit">Se connecter</button>
+</form>
+</body>
+</html>

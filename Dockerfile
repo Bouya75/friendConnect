@@ -1,10 +1,9 @@
-# Étape 1 : Construction (Build)
+# Étape 1 : Construction
 FROM maven:3.8.4-openjdk-17 AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
-# Étape 2 : Exécution (Runtime)
-# On change "openjdk" par "eclipse-temurin" qui est l'image officielle actuelle
+# Étape 2 : Exécution
 FROM eclipse-temurin:17-jdk-jammy
 COPY --from=build /target/*.jar app.jar
 EXPOSE 8080

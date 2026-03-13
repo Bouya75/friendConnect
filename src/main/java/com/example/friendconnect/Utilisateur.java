@@ -1,4 +1,3 @@
-
 package com.example.friendconnect;
 
 import jakarta.persistence.Entity;
@@ -17,9 +16,10 @@ public class Utilisateur {
     private String prenom;
     private String email;
     private String motDePasse;
-    private String photoProfil; // On ne garde que celle-là !
+    private String photoProfil;
+    private String role; // Contiendra "ROLE_USER" ou "ROLE_ADMIN"
 
-    // Constructeur vide (obligatoire pour JPA)
+    // Constructeur vide obligatoire pour JPA
     public Utilisateur() {
     }
 
@@ -68,5 +68,13 @@ public class Utilisateur {
     }
     public void setPhotoProfil(String photoProfil) {
         this.photoProfil = photoProfil;
+    }
+
+    // --- ROLE (Sécurité) ---
+    public String getRole() {
+        return role;
+    }
+    public void setRole(String role) {
+        this.role = role;
     }
 }

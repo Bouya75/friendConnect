@@ -1,42 +1,66 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><link rel="stylesheet" href="/style.css">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
     <meta charset="UTF-8">
     <title>Inscription - FriendConnect</title>
+    <link rel="stylesheet" href="/style.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding-top: 60px; }
+        .container-center { display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 60px); }
         .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 350px; }
-        h2 { color: #1877f2; text-align: center; }
+        h2 { color: #1877f2; text-align: center; margin-top: 0; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
         button:hover { background: #166fe5; }
+        .login-link { text-align: center; margin-top: 15px; font-size: 14px; }
+        .login-link a { color: #1877f2; text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>FriendConnect</h2>
-        <form action="/inscription" method="post">
-            Nom: <input type="text" name="nom" required><br>
-            Prénom: <input type="text" name="prenom" required><br>
-            Email: <input type="email" name="email" required><br>
-            Mot de passe: <input type="password" name="motDePasse" required><br>
-            <button type="submit">S'inscrire</button>
-        </form>
-    </div>
-</body>
+
 <nav class="navbar">
     <div class="nav-container">
-        <a href="/membres" class="nav-logo">FriendConnect</a>
+        <a href="/" class="nav-logo">FriendConnect</a>
         <div class="nav-links">
-            <a href="/membres">Membres</a>
-            <a href="/profil">
+            <a sec:authorize="isAuthenticated()" href="/membres">Membres</a>
+            <a sec:authorize="isAuthenticated()" href="/profil">
                 Mon Profil
-                <span th:if="${nbMessages > 0}" class="notif-badge">[[${nbMessages}]]</span>
+                <span th:if="${nbMessages > 0}" class="notif-badge" th:text="${nbMessages}">0</span>
             </a>
-            <a href="/deconnexion" class="btn-logout">Déconnexion</a>
+
+            <a sec:authorize="!isAuthenticated()" href="/login">Connexion</a>
+
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" class="btn-logout-link" style="background:none; border:none; color:white; cursor:pointer;">Déconnexion</button>
+            </form>
         </div>
     </div>
 </nav>
 
-</html>
+<div class="container-center">
+    <div class="card">
+        <h2>FriendConnect</h2>
+        <form th:action="@{/inscription}" method="post">
+            <label>Nom:</label>
+            <input type="text" name="nom" placeholder="Votre nom" required>
 
+            <label>Prénom:</label>
+            <input type="text" name="prenom" placeholder="Votre prénom" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" placeholder="votre@email.com" required>
+
+            <label>Mot de passe:</label>
+            <input type="password" name="motDePasse" placeholder="********" required>
+
+            <button type="submit">S'inscrire</button>
+        </form>
+        <div class="login-link">
+            Déjà membre ? <a href="/login">Connectez-vous ici</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

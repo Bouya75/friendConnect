@@ -1,85 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Membres - FriendConnect</title>
+    <link rel="stylesheet" href="/style.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; margin: 0; }
-        .navbar { background: #ffffff; padding: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-around; position: sticky; top: 0; z-index: 100; }
-        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
-        .card { background: white; border-radius: 12px; padding: 1.5rem; text-align: center; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .card:hover { transform: translateY(-5px); }
-        .card img { width: 80px; height: 80px; border-radius: 50%; background: #e4e6eb; margin-bottom: 1rem; }
-        .btn-add { background: #1877f2; color: white; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 600; cursor: pointer; width: 100%; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
+        .navbar { background-color: #ffffff; padding: 15px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: center; gap: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); align-items: center;}
+        .navbar a { text-decoration: none; color: #1877f2; font-weight: bold; }
+        .navbar .admin-link { color: #dc3545; }
 
-         /* Barre de recherche (Option B) */
-         .search-section { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
-         .search-form { display: flex; gap: 10px; }
-         .search-input { flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
-         .btn-search { background-color: #1877f2; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .container { padding: 40px; max-width: 1000px; margin: auto; }
 
-         /* Liste des membres (Option A) */
-         .user-item { display: flex; align-items: center; padding: 15px; border-radius: 8px; margin-bottom: 10px; background: #fff; border: 1px solid #f0f2f5; transition: 0.2s; }
-         .user-item:hover { background-color: #f9fafb; border-color: #1877f2; }
-         .user-photo { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; margin-right: 20px; border: 2px solid #1877f2; background-color: #eee; }
-         .user-details { flex-grow: 1; }
-         .user-name { font-weight: bold; color: #1c1e21; font-size: 1.2em; margin: 0; }
-         .user-email { color: #65676b; font-size: 0.9em; margin-top: 4px; }
+        /* Barre de recherche */
+        .search-bar { text-align: center; margin-bottom: 30px; }
+        .search-bar input { padding: 10px; width: 300px; border: 1px solid #ddd; border-radius: 20px; padding-left: 20px; }
+        .search-bar button { padding: 10px 20px; border-radius: 20px; border: none; background: #1877f2; color: white; cursor: pointer; }
 
-         /* Bouton Ami (Option C) */
-         .btn-friend { background-color: #e4e6eb; color: #050505; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-         .btn-friend:hover { background-color: #d8dadf; }
+        .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .member-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+        .member-card img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid #e7f3ff; }
+        .member-name { font-size: 1.1em; font-weight: bold; display: block; margin-bottom: 15px; color: #1c1e21; }
 
-         .footer-links { margin-top: 30px; display: flex; gap: 20px; justify-content: center; }
-         .footer-links a { text-decoration: none; color: #1877f2; font-weight: bold; }
-         .btn-logout { color: #d93025 !important; }
+        .btn-add { background-color: #1877f2; color: white; padding: 8px 16px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn-add:hover { background-color: #166fe5; }
     </style>
 </head>
-<link rel="stylesheet" href="/style.css">
 <body>
 
-<div class="container">
-    <h2>Découvrir des membres</h2>
+<nav class="navbar">
+    <a href="/">🏠 Accueil</a>
+    <a sec:authorize="isAuthenticated()" href="/membres">👥 Membres</a>
+    <a sec:authorize="isAuthenticated()" href="/profil">👤 Mon Profil</a>
+    <a sec:authorize="hasRole('ADMIN')" href="/membres/liste" class="admin-link">🚨 Gérer les membres</a>
 
-    <div class="search-section">
-        <form action="/membres" method="get" class="search-form">
-            <input type="text" name="recherche" class="search-input" placeholder="Rechercher une personne par son nom...">
-            <button type="submit" class="btn-search">Rechercher</button>
+    <a sec:authorize="!isAuthenticated()" href="/login">Connexion</a>
+
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" style="background:none; border:none; color:#1877f2; font-weight:bold; cursor:pointer; font-family: inherit; font-size: inherit;">
+                Déconnexion
+            </button>
+        </form>
+    </span>
+</nav>
+
+<div class="container">
+    <h2 style="text-align: center; color: #1c1e21;">Découvrir de nouveaux amis</h2>
+
+    <div class="search-bar">
+        <form th:action="@{/membres}" method="get">
+            <input type="text" name="recherche" placeholder="Rechercher un nom..." th:value="${param.recherche}">
+            <button type="submit">Rechercher</button>
         </form>
     </div>
 
-    <div class="user-list">
-        <div th:each="u : ${membres}" class="user-item">
+    <div class="member-grid">
+        <div th:each="u : ${utilisateurs}" class="member-card" th:if="${u.id != utilisateurConnecteId}">
 
-            <img class="user-photo"
-                 th:src="${u.photoUrl != null && u.photoUrl != '' ? u.photoUrl : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
-                 alt="Profil">
+            <img th:src="${u.photoProfil != null && u.photoProfil != '' ? u.photoProfil : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" alt="Photo">
 
-            <div class="user-details">
-                <p class="user-name" th:text="${u.prenom + ' ' + u.nom}">Prénom Nom</p>
-                <p class="user-email" th:text="${u.email}">email@test.com</p>
-            </div>
+            <span class="member-name" th:text="${u.prenom + ' ' + u.nom}">Nom Membre</span>
 
-            <button class="btn-friend">
-                <span>➕</span>
-                <form action="/ajouter-ami" method="post">
-                    <input type="hidden" name="amiId" th:value="${u.id}">
-                    <button type="submit" class="btn-friend">➕ Ajouter en ami</button>
-                </form>Ajouter
-            </button>
-        </div>
-
-        <div th:if="${#lists.isEmpty(membres)}" style="text-align: center; color: #65676b; padding: 40px;">
-            <p>Désolé, aucun membre ne correspond à votre recherche.</p>
-            <a href="/membres">Afficher tous les membres</a>
+            <form th:action="@{/ajouter-ami}" method="post">
+                <input type="hidden" name="amiId" th:value="${u.id}">
+                <button type="submit" class="btn-add">➕ Ajouter</button>
+            </form>
         </div>
     </div>
 
-    <div class="footer-links">
-        <a href="/profil">Mon Profil</a>
-        <a href="/inscription">Inscrire quelqu'un</a>
-        <a href="/deconnexion" class="btn-logout">Se déconnecter</a>
+    <div th:if="${#lists.isEmpty(utilisateurs)}" style="text-align: center; padding: 50px;">
+        <p style="color: #888;">Aucun membre trouvé.</p>
     </div>
 </div>
 

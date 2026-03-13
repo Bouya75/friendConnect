@@ -1,70 +1,100 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-
     <meta charset="UTF-8">
     <title>Mon Profil - FriendConnect</title>
+    <link rel="stylesheet" href="/style.css">
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 40px; }
-        .card { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .info { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .label { font-weight: bold; color: #1877f2; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 0; }
+        .navbar { background-color: #ffffff; padding: 15px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: center; gap: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); align-items: center; }
+        .navbar a { text-decoration: none; color: #1877f2; font-weight: bold; }
+        .navbar .admin-link { color: #dc3545; }
+
+        .container { padding: 40px; }
+        .card { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .profile-header { text-align: center; margin-bottom: 25px; }
+        .profile-header img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #e7f3ff; margin-bottom: 15px; }
+
+        .info { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; }
+        .label { font-weight: bold; color: #555; }
+        .value { color: #1c1e21; font-weight: 500; }
+
+        .friend-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 10px; border: 1px solid #eef0f2; }
+        .friend-info { display: flex; align-items: center; }
+        .btn-chat { padding: 8px 16px; background: #1877f2; color: white; border-radius: 6px; text-decoration: none; font-size: 0.9em; font-weight: bold; }
+
+        .update-photo-form { display: flex; gap: 10px; margin-top: 15px; }
+        .update-photo-form input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        .update-photo-form button { padding: 10px 15px; background: #42b72a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
-<link rel="stylesheet" href="/style.css">
 <body>
-<div class="card">
-    <h2>Mon Profil</h2>
-    <div class="info">
-        <span class="label">Prénom :</span> <span th:text="${utilisateur.prenom}">Prénom</span>
-    </div>
-    <div class="info">
-        <span class="label">Nom :</span> <span th:text="${utilisateur.nom}">Nom</span>
-    </div>
-    <div class="info">
-        <span class="label">Email :</span> <span th:text="${utilisateur.email}">Email</span>
-    </div>
-    <h3>Modifier ma photo de profil</h3>
-    <form action="/modifier-photo" method="post">
-        <input type="text" name="urlPhoto" placeholder="Lien de votre image (URL)" required>
-        <button type="submit">Mettre à jour</button>
-    </form>
-    <br>
-    <a href="/membres">Voir tous les membres</a> |
-    <a href="/deconnexion" style="color: red;">Se déconnecter</a>
-    <hr>
-    <h3>Mes Amis</h3>
-    <div th:if="${not #lists.isEmpty(mesAmities)}">
-        <a th:href="@{'/messages/' + ${lAmi.id}}" style="text-decoration: none; margin-left: 10px;">💬 Discuter</a>
-        <div th:each="a : ${mesAmities}" style="display: flex; align-items: center; margin-bottom: 10px;">
-            <div th:with="lAmi=${a.demandeur.id == utilisateur.id ? a.ami : a.demandeur}">
-                <img th:src="${lAmi.photoUrl != null && lAmi.photoUrl != '' ? lAmi.photoUrl : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
-                     style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;">
-                <span th:text="${lAmi.prenom + ' ' + lAmi.nom}" style="font-weight: bold;">Nom de l'ami</span>
-            </div>
-        </div>
-    </div>
 
-    <p th:if="${#lists.isEmpty(mesAmities)}" style="color: #888;">Vous n'avez pas encore d'amis.</p>
-</div>
-<div th:each="ami : ${amis}">
-    <span th:text="${ami.prenom}">Prénom</span>
-    <a th:href="@{'/messages/' + ${ami.id}}" style="padding: 5px 10px; background: #0084ff; color: white; border-radius: 5px; text-decoration: none;">
-        💬 Discuter
-    </a>
-</div>
-</body>
-<body>
 <nav class="navbar">
-    <a href="/membres">Membres</a>
-    <a href="/profil">
-        Mon Profil
-        <span th:if="${nbMessages > 0}" style="...">[[${nbMessages}]]</span>
-    </a>
-    <a href="/deconnexion">Déconnexion</a>
+    <a href="/">🏠 Accueil</a>
+    <a sec:authorize="isAuthenticated()" href="/membres">👥 Membres</a>
+    <a sec:authorize="isAuthenticated()" href="/profil">👤 Mon Profil</a>
+    <a sec:authorize="hasRole('ADMIN')" href="/membres/liste" class="admin-link">🚨 Gérer les membres</a>
+
+    <a sec:authorize="!isAuthenticated()" href="/login">Connexion</a>
+
+    <span sec:authorize="isAuthenticated()">
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" style="background:none; border:none; color:#1877f2; font-weight:bold; cursor:pointer; font-family: inherit; font-size: inherit;">
+                Déconnexion
+            </button>
+        </form>
+    </span>
 </nav>
 
 <div class="container">
+    <div class="card">
+        <div class="profile-header">
+            <img th:src="${utilisateur.photoProfil != null && utilisateur.photoProfil != '' ? utilisateur.photoProfil : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" alt="Ma Photo">
+            <h2 th:text="${utilisateur.prenom + ' ' + utilisateur.nom}">Mon Profil</h2>
+        </div>
+
+        <div class="info">
+            <span class="label">Prénom :</span>
+            <span class="value" th:text="${utilisateur.prenom}">Prénom</span>
+        </div>
+        <div class="info">
+            <span class="label">Nom :</span>
+            <span class="value" th:text="${utilisateur.nom}">Nom</span>
+        </div>
+        <div class="info">
+            <span class="label">Email :</span>
+            <span class="value" th:text="${utilisateur.email}">Email</span>
+        </div>
+
+        <h3 style="margin-top: 25px; font-size: 1.1em;">Modifier ma photo de profil</h3>
+        <form th:action="@{/modifier-photo}" method="post" class="update-photo-form">
+            <input type="text" name="urlPhoto" th:value="${utilisateur.photoProfil}" placeholder="URL de l'image (ex: https://...)" required>
+            <button type="submit">Mettre à jour</button>
+        </form>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+        <h3>👥 Mes Amis</h3>
+        <div th:if="${not #lists.isEmpty(mesAmities)}">
+            <div th:each="a : ${mesAmities}" class="friend-item">
+                <div th:with="lAmi=${a.demandeur.id == utilisateur.id ? a.ami : a.demandeur}" class="friend-info">
+                    <img th:src="${lAmi.photoProfil != null && lAmi.photoProfil != '' ? lAmi.photoProfil : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}"
+                         style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 1px solid #ddd;">
+                    <span th:text="${lAmi.prenom + ' ' + lAmi.nom}" style="font-weight: bold; color: #1c1e21;">Nom de l'ami</span>
+                </div>
+
+                <a th:with="lAmi=${a.demandeur.id == utilisateur.id ? a.ami : a.demandeur}"
+                   th:href="@{'/messages/' + ${lAmi.id}}" class="btn-chat">💬 Discuter</a>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(mesAmities)}" style="text-align: center; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+            <p style="color: #888; margin: 0;">Vous n'avez pas encore d'amis. <br> <a href="/membres" style="color: #1877f2; text-decoration: none;">Cherchez des membres ici !</a></p>
+        </div>
+    </div>
 </div>
+
 </body>
 </html>

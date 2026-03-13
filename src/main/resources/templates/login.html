@@ -1,15 +1,48 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - FriendConnect</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: #1877f2; margin-bottom: 1.5rem; font-size: 28px; }
+        .error-msg { color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 6px; margin-bottom: 1rem; font-size: 14px; }
+        .success-msg { color: #2e7d32; background: #e8f5e9; padding: 10px; border-radius: 6px; margin-bottom: 1rem; font-size: 14px; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 14px; background: #1877f2; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; transition: background 0.3s; }
+        button:hover { background: #166fe5; }
+        .footer-links { margin-top: 20px; font-size: 14px; color: #606770; }
+        .footer-links a { color: #1877f2; text-decoration: none; font-weight: bold; }
+    </style>
 </head>
-<link rel="stylesheet" href="/style.css">
 <body>
-<h2>Connexion</h2>
-<p th:if="${erreur}" th:text="${erreur}" style="color:red"></p>
 
-<form action="/login" method="post">
-    Email: <input type="email" name="email" required><br>
-    Mot de passe: <input type="password" name="motDePasse" required><br>
-    <button type="submit">Se connecter</button>
-</form>
+<div class="card">
+    <h2>FriendConnect</h2>
+
+    <div th:if="${param.error}" class="error-msg">
+        Email ou mot de passe incorrect.
+    </div>
+
+    <div th:if="${param.success}" class="success-msg">
+        Inscription réussie ! Connectez-vous.
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <input type="email" name="username" placeholder="Adresse e-mail" required autofocus>
+
+        <input type="password" name="password" placeholder="Mot de passe" required>
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <div class="footer-links">
+        Nouveau sur FriendConnect ? <a href="/inscription">Créer un compte</a>
+    </div>
+</div>
+
 </body>
 </html>

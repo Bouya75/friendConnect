@@ -1,46 +1,25 @@
-/* Style Global */
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; }
+/* --- 1. VARIABLES & RESET --- */
+:root {
+    --fb-blue: #1877f2;
+    --fb-bg: #f0f2f5;
+    --red-notif: #fa3e3e;
+}
 
-/* La Barre de Navigation */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--fb-bg);
+    margin: 0;
+    padding-top: 60px; /* Espace pour la navbar fixe */
+}
+
+/* --- 2. BARRE DE NAVIGATION --- */
 .navbar {
-    background: #1877f2;
-    padding: 1rem;
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.navbar a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    position: relative;
-}
-
-/* La Pastille de Notification */
-.notif-badge {
-    background: #fa3e3e;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 11px;
-    position: absolute;
-    top: -10px;
-    right: -15px;
-    border: 2px solid #1877f2;
-}
-
-/* Les Cartes de Membres */
-.container { max-width: 800px; margin: 20px auto; padding: 20px; }
-.card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-/* Style de la barre de navigation */
-.navbar {
-    background-color: #1877f2; /* Bleu moderne */
+    background-color: var(--fb-blue);
     padding: 0.8rem 0;
     color: white;
-    position: sticky;
+    position: fixed; /* Reste en haut au scroll */
     top: 0;
+    width: 100%;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -61,46 +40,43 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-
     text-decoration: none;
 }
 
-.nav-links a {
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links a, .btn-logout-link {
     color: white;
     text-decoration: none;
-    margin-left: 20px;
     font-weight: 500;
     position: relative;
-}
-
-/* Style de la pastille de notification */
-.notif-badge {
-    background-color: #fa3e3e;
-    color: white;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    position: absolute;
-    top: -12px;
-    right: -15px;
-    border: 2px solid #1877f2;
-}
-
-.btn-logout {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 5px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 5px 10px;
     border-radius: 5px;
     transition: background 0.3s;
 }
 
-.btn-logout:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+.nav-links a:hover, .btn-logout-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
+
+/* --- 3. NOTIFICATIONS (PASTILLE) --- */
 .notif-badge {
-    background-color: #fa3e3e;
+    background-color: var(--red-notif);
     color: white;
     font-size: 11px;
     padding: 2px 7px;
     border-radius: 10px;
     font-weight: bold;
-    /* Petit effet de pulse pour les nouveaux messages */
-    box-shadow: 0 0 0 0 rgba(250, 62, 62, 0.7);
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    border: 2px solid var(--fb-blue);
     animation: pulse-red 2s infinite;
 }
 
@@ -109,11 +85,44 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-
     70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(250, 62, 62, 0); }
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(250, 62, 62, 0); }
 }
+
+/* --- 4. CARTES ET CONTENEURS --- */
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* --- 5. PHOTOS DE PROFIL --- */
 .user-photo {
     width: 60px;
     height: 60px;
-    border-radius: 50%; /* Rend l'image parfaitement ronde */
-    object-fit: cover;  /* Empêche de déformer l'image si elle n'est pas carrée */
-    border: 2px solid #1877f2; /* Un petit cercle bleu autour */
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--fb-blue);
     background-color: #e4e6eb;
+}
+
+/* --- 6. BOUTONS ADMIN & ACTIONS --- */
+.admin-link {
+    color: #ffcccc !important; /* Rouge clair pour se démarquer sur le bleu */
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: var(--fb-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
 }

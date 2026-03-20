@@ -22,7 +22,8 @@ public class Amitie {
     public void setId(Long id) { this.id = id; }
 
     public Utilisateur getDemandeur() { return demandeur; }
-    public void setDemandeur(Utilisateur demandeur) { this.demandeur = demandeur; }
+    public void
+    setDemandeur(Utilisateur demandeur) { this.demandeur = demandeur; }
 
     public Utilisateur getAmi() { return ami; }
     public void setAmi(Utilisateur ami) { this.ami = ami; }

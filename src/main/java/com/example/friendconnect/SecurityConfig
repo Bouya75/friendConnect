@@ -1,14 +1,27 @@
-package com.example.friendconnect;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests(auth -> auth
+            // 1. On autorise TOUT LE MONDE à voir les fichiers statiques (Design, images, logos)
+            .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
 
-public class SecurityConfig {
+            // 2. On autorise TOUT LE MONDE à accéder aux pages d'inscription et de login
+            .requestMatchers("/inscription", "/login", "/register").permitAll()
 
+            // 3. Tout le reste de l'application requiert d'être connecté (Espace membres)
+            .anyRequest().authenticated()
+        )
+        .formLogin(form -> form
+            .loginPage("/login")
+            .usernameParameter("username") // ou "email" selon ton formulaire login.html
+            .defaultSuccessUrl("/accueil", true) // La page où l'utilisateur arrive après connexion
+            .permitAll()
+        )
+        .logout(logout -> logout
+            .logoutSuccessUrl("/login?logout")
+            .permitAll()
+        );
 
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    return http.build();
 }

@@ -11,22 +11,24 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UtilisateurRepository userRepository;
+    private UtilisateurRepository repo; // Ton repository pour parler à la base de données
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // 1. On cherche l'utilisateur dans la base par son email
-        Utilisateur utilisateur = userRepository.findByEmail(email);
+        // 1. On cherche l'utilisateur en base par son email
+        Utilisateur utilisateur = repo.findByEmail(email);
 
-        // 2. Si on ne le trouve pas, on lance une erreur
+        // 2. Si on ne le trouve pas, on lève une erreur
         if (utilisateur == null) {
             throw new UsernameNotFoundException("Utilisateur non trouvé avec l'email : " + email);
         }
 
-        // 3. On transforme notre "Utilisateur" en un "User" compréhensible par Spring Security
+        // 3. On transforme ton "Utilisateur" en un utilisateur compris par Spring Security
+        String roleNettoye = utilisateur.getRole().replace("ROLE_", "");
+
         return User.withUsername(utilisateur.getEmail())
-                .password(utilisateur.getMotDePasse())
-                .roles(utilisateur.getRole().replace("ROLE_", "")) // On enlève ROLE_ car Spring l'ajoute tout seul
+                .password(utilisateur.getMotDePasse()) // C'est le mot de passe déjà crypté
+                .roles(roleNettoye)
                 .build();
     }
 }

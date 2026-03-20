@@ -1,16 +1,11 @@
-# Étape 1 : Build avec Maven
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+# Étape 1 : Construction (Build)
+FROM maven:3.8.4-openjdk-17 AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
-# Étape 2 : Exécution
-FROM eclipse-temurin:21-jdk
+# Étape 2 : Exécution (Runtime)
+# On change "openjdk" par "eclipse-temurin" qui est l'image officielle actuelle
+FROM eclipse-temurin:17-jdk-jammy
 COPY --from=build /target/*.jar app.jar
-
-# Création du dossier data pour la base de données H2
-RUN mkdir -p /data
-# Volume pour que les données persistent si besoin
-VOLUME /data
-
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,18 +1,13 @@
-
 package com.example.friendconnect;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-// ... autres imports
 
-@Configuration // <--- OBLIGATOIRE
 public class SecurityConfig {
 
-    // ... ta méthode filterChain
 
-    @Bean // <--- OBLIGATOIRE : C'est ici que tu "donnes" l'outil à Spring
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
